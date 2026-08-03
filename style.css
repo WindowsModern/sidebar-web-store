@@ -1,0 +1,202 @@
+*,
+button,
+input,
+select,
+textarea,
+a,
+label,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+table,
+th,
+td,
+tr,
+img,
+iframe,
+object,
+embed,
+audio,
+video,
+canvas,
+form,
+fieldset,
+legend,
+.win-type-x-large,
+.win-type-xx-large,
+.font-fix {
+    font-family: "Microsoft YaHei", "Segoe UI", "Ebrima", "Nirmala", "Gadugi", "Segoe UI Emoji", "Segoe UI Symbol", "Meiryo", "Leelawadee", "Microsoft JhengHei", "Malgun Gothic", "Estrangelo Edessa", "Microsoft Himalaya", "Microsoft New Tai Lue", "Microsoft PhagsPa", "Microsoft Tai Le", "Microsoft Yi Baiti", "Mongolian Baiti", "MV Boli", "Myanmar Text", "Javanese Text", "Cambria Math";
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    user-select: none;
+    -ms-user-select: none;
+}
+
+.store-header {
+    height: 50px;
+    background-color: rgb(0, 136, 221);
+}
+
+.store-header ul {
+    list-style-type: none;
+    margin: 0 0 0 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+}
+
+.store-header ul li {
+    padding: 0;
+    margin: 0 5px 0 0;
+    color: white;
+    height: 100%;
+}
+
+.store-header ul li a {
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+    padding: 0 10px;
+}
+
+.store-header ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.store-header ul li a:active {
+    background-color: white;
+    color: rgb(0, 136, 221);
+}
+
+.store-header-container {
+    margin: 0 120px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+}
+
+.store-header-title {
+    font-size: 16pt;
+}
+
+.store-item {
+    display: flex;
+    background-color: white;
+    color: black;
+    margin: 0 10px 10px 0;
+    width: 300px;
+    height: 80px;
+    box-sizing: border-box;
+    padding: 10px;
+    transition: all 0.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.store-item .logo {
+    width: 60px;
+    height: 60px;
+}
+
+.store-item .displayname {
+    display: block;
+}
+
+.store-item .publisher {
+    font-size: 11pt;
+    color: gray;
+    display: block;
+}
+
+.store-item .version {
+    font-size: 11pt;
+    display: block;
+}
+
+.store-item .displayname,
+.store-item .publisher,
+.store-item .version {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.store-list {
+    padding: 50px 120px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: calc(100% - 50px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}
+
+.store-list-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding-right: 120px;
+}
+
+.store-item:hover {
+    background-color: rgb(221, 221, 221);
+}
+
+.store-item:active {
+    background-color: rgb(191, 191, 191);
+}
+
+.flex-r-t-l-c {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.detail-column {
+    column-width: 150px;
+    column-gap: 40px;
+    column-fill: auto;
+    column-gap: 50px;
+}

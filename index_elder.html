@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title data-locale-res="STORE_NAME">Sidebar Gadget Web Store</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleai.css">
+    <script src="storeapi_elder.js"></script>
+    <script src="locale_elder.js"></script>
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Aero 蓝色渐变背景 */
+            background: #b8d4f0;
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#d0e4f7', EndColorStr='#9ac2e0');
+            background: -webkit-gradient(linear, left top, left bottom, from(#d0e4f7), to(#9ac2e0));
+            background: -moz-linear-gradient(top, #d0e4f7, #9ac2e0);
+            background: -ms-linear-gradient(top, #d0e4f7, #9ac2e0);
+            background: linear-gradient(to bottom, #d0e4f7, #9ac2e0);
+            color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Calibri', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* ===== Aero 标题栏 ===== */
+        .store-header {
+            background: rgba(0, 0, 0, 0.35);
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#80000000', EndColorStr='#60000000');
+            padding: 0 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .store-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 60px;
+            padding: 0 8px;
+            overflow: hidden;
+        }
+
+        .store-header-title {
+            float: left;
+            line-height: 60px;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .store-header-nav {
+            float: right;
+            line-height: 60px;
+        }
+
+        .store-header-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 6px 16px;
+            transition: background 0.15s, color 0.15s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-left: 6px;
+            display: inline-block;
+        }
+
+        .store-header-nav a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .store-header-nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== 主容器 ===== */
+        .store-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 40px 60px;
+        }
+
+        /* ===== 网格容器（浮动布局） ===== */
+        .store-grid {
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        /* ===== Aero 卡片（小圆角） ===== */
+        .store-item-card {
+            background: rgba(255, 255, 255, 0.75);
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#c0ffffff', EndColorStr='#b0ffffff');
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 3px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            padding: 16px 14px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+            float: left;
+            width: 220px;
+            min-height: 180px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+        }
+
+        .store-item-card:nth-child(5n) {
+            margin-right: 0;
+        }
+
+        .store-item-card:hover {
+            border-color: #0078d7;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 6px 20px rgba(0, 120, 215, 0.25), inset 0 1px 0 #ffffff;
+        }
+
+        .store-item-card .card-row {
+            overflow: hidden;
+        }
+
+        .store-item-card .card-logo {
+            float: left;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.6);
+            object-fit: contain;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 3px;
+            margin-right: 12px;
+        }
+
+        .store-item-card .card-info {
+            overflow: hidden;
+        }
+
+        .store-item-card .card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 2px 0;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+
+        .store-item-card .card-publisher {
+            font-size: 12px;
+            color: #4a5568;
+            display: block;
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .store-item-card .card-version {
+            font-size: 11px;
+            color: #0078d7;
+            background: rgba(0, 120, 215, 0.08);
+            padding: 2px 12px;
+            margin-top: 8px;
+            display: inline-block;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            border-radius: 3px;
+            border: 1px solid rgba(0, 120, 215, 0.15);
+            text-transform: uppercase;
+        }
+
+        .store-item-card .card-arrow {
+            float: right;
+            color: #b0b8c4;
+            font-size: 22px;
+            line-height: 48px;
+            opacity: 0.5;
+            transition: opacity 0.15s, color 0.15s;
+        }
+
+        .store-item-card:hover .card-arrow {
+            opacity: 1;
+            color: #0078d7;
+        }
+
+        /* ===== 分页导航（小圆角） ===== */
+        .pagination {
+            overflow: hidden;
+            text-align: center;
+            margin: 30px 0 10px;
+            padding: 10px 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 6px 14px;
+            margin: 0 2px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.5);
+            color: #1a1a2e;
+            text-decoration: none;
+            transition: background 0.15s, border-color 0.15s;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 13px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .pagination a:hover {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: #0078d7;
+        }
+
+        .pagination a.active {
+            background: #0078d7;
+            border-color: #0078d7;
+            color: #ffffff;
+            cursor: default;
+            box-shadow: 0 2px 6px rgba(0, 120, 215, 0.3);
+        }
+
+        .pagination a.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+            background: rgba(200, 200, 200, 0.3);
+        }
+
+        .pagination .page-info {
+            display: inline-block;
+            margin: 0 12px;
+            font-weight: 300;
+            color: #3a4a5e;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 3px;
+        }
+
+        .pagination span {
+            display: inline-block;
+            padding: 0 4px;
+            color: #4a5a6e;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #3a4a5e;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            border-radius: 3px;
+            width: 100%;
+            float: left;
+        }
+
+        .empty-state .icon-symbol {
+            font-size: 42px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+            display: block;
+            font-weight: 300;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1024px) {
+            .store-item-card {
+                width: 200px;
+                margin-right: 15px;
+                margin-bottom: 15px;
+            }
+            .store-item-card:nth-child(5n) {
+                margin-right: 15px;
+            }
+            .store-item-card:nth-child(4n) {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .store-header {
+                padding: 0 16px;
+            }
+            .store-header-container {
+                height: 52px;
+            }
+            .store-header-title {
+                font-size: 18px;
+                line-height: 52px;
+            }
+            .store-header-nav {
+                line-height: 52px;
+            }
+            .store-header-nav a {
+                padding: 4px 12px;
+                font-size: 12px;
+            }
+            .store-list {
+                padding: 16px 16px 40px;
+            }
+            .store-item-card {
+                width: 170px;
+                min-height: 150px;
+                margin-right: 12px;
+                margin-bottom: 12px;
+            }
+            .store-item-card:nth-child(4n) {
+                margin-right: 12px;
+            }
+            .store-item-card:nth-child(3n) {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .store-item-card {
+                width: 140px;
+                min-height: 130px;
+                padding: 12px 10px;
+                margin-right: 8px;
+                margin-bottom: 8px;
+            }
+            .store-item-card .card-logo {
+                width: 36px;
+                height: 36px;
+            }
+            .store-item-card .card-name {
+                font-size: 13px;
+            }
+            .store-item-card .card-publisher {
+                font-size: 11px;
+            }
+            .store-item-card:nth-child(3n) {
+                margin-right: 8px;
+            }
+            .store-item-card:nth-child(2n) {
+                margin-right: 0;
+            }
+            .pagination a {
+                padding: 4px 10px;
+                font-size: 12px;
+            }
+            .pagination .page-info {
+                font-size: 12px;
+                padding: 2px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="store-header">
+        <div class="store-header-container">
+            <h1 class="store-header-title" data-locale-res="STORE_NAME">Sidebar Gadget Web Store</h1>
+            <nav class="store-header-nav">
+                <a href="index_elder.html" class="active" data-locale-res="STORE_HOMEPAGE">主页</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="store-list" style="height: calc(100% - 60px); overflow: auto;">
+        <div id="item-list" class="store-grid">
+            <!-- 动态渲染 -->
+        </div>
+        <!-- 分页导航 -->
+        <div id="pagination" class="pagination">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <!-- 卡片模板 -->
+    <div id="itemtemplate" style="display: none;">
+        <div class="store-item-card">
+            <div class="card-row">
+                <img class="card-logo" src="" alt="Logo">
+                <div class="card-info">
+                    <div class="card-name"></div>
+                    <span class="card-publisher"></span>
+                </div>
+                <span class="card-arrow">›</span>
+            </div>
+            <span class="card-version"></span>
+        </div>
+    </div>
+
+    <script>
+        (function(global) {
+            // ----- 工具函数：获取 URL 参数（兼容 IE8） -----
+            function getQueryParam(name) {
+                var search = window.location.search;
+                if (search.length === 0) return null;
+                var qs = search.substring(1);
+                var pairs = qs.split('&');
+                for (var i = 0; i < pairs.length; i++) {
+                    var pair = pairs[i].split('=');
+                    var key = decodeURIComponent(pair[0]);
+                    if (key === name) {
+                        return decodeURIComponent(pair[1] || '');
+                    }
+                }
+                return null;
+            }
+
+            // ----- 模板克隆 -----
+            function getTemplate() {
+                return document.getElementById("itemtemplate").cloneNode(true);
+            }
+
+            // ----- 将 item 转为 DOM 节点 -----
+            function itemToNode(item) {
+                var node = getTemplate();
+                node.style.display = "";
+                var logo = node.querySelector(".card-logo");
+                var name = node.querySelector(".card-name");
+                var publisher = node.querySelector(".card-publisher");
+                var version = node.querySelector(".card-version");
+                var arrow = node.querySelector(".card-arrow");
+
+                logo.src = store.getItemLogo(item);
+                logo.alt = store.getItemDisplayName(item);
+                name.textContent = store.getItemDisplayName(item);
+                publisher.textContent = store.getItemPublisher(item);
+
+                var verItem = store.getSupportedNewestVersionItem(item);
+                version.textContent = verItem ? "v" + verItem.version : "--";
+
+                // 兼容 IE8 的事件绑定
+                var clickHandler = function() {
+                    try {
+                        global.window.navigation.navigate("detail_elder.html?familyname=" + item.directory);
+                    } catch (e) {
+                        global.location.href = "detail_elder.html?familyname=" + item.directory;
+                    }
+                };
+                if (node.addEventListener) {
+                    node.addEventListener("click", clickHandler);
+                } else if (node.attachEvent) {
+                    node.attachEvent("onclick", clickHandler);
+                }
+                node.setAttribute("role", "button");
+                node.setAttribute("tabindex", "0");
+
+                var keyHandler = function(e) {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault ? e.preventDefault() : (e.returnValue = false);
+                        try {
+                            global.window.navigation.navigate("detail_elder.html?familyname=" + item.directory);
+                        } catch (e) {
+                            global.location.href = "detail_elder.html?familyname=" + item.directory;
+                        }
+                    }
+                };
+                if (node.addEventListener) {
+                    node.addEventListener("keydown", keyHandler);
+                } else if (node.attachEvent) {
+                    node.attachEvent("onkeydown", keyHandler);
+                }
+                return node;
+            }
+
+            // ----- 渲染项目列表 -----
+            function renderItems(items) {
+                var container = document.getElementById("item-list");
+                container.innerHTML = "";
+                if (!items || items.length === 0) {
+                    container.innerHTML =
+                        '<div class="empty-state"><span class="icon-symbol">—</span><p>' +
+                        locale.getStringResource("STORE_NOITEMS") + '</p></div>';
+                    return;
+                }
+                var sorted = items.slice().sort(function(a, b) {
+                    var nameA = store.getItemDisplayName(a) || '';
+                    var nameB = store.getItemDisplayName(b) || '';
+                    return nameA.localeCompare(nameB, undefined);
+                });
+                for (var i = 0; i < sorted.length; i++) {
+                    container.appendChild(itemToNode(sorted[i]));
+                }
+            }
+
+            // ----- 渲染分页导航 -----
+            function renderPagination(currentPage, totalPages) {
+                var container = document.getElementById("pagination");
+                container.innerHTML = "";
+
+                function createLink(text, page, isActive, isDisabled) {
+                    var a = document.createElement("a");
+                    a.textContent = text;
+                    if (isActive) {
+                        a.className = "active";
+                        a.href = "javascript:void(0)";
+                    } else if (isDisabled) {
+                        a.className = "disabled";
+                        a.href = "javascript:void(0)";
+                    } else {
+                        a.href = "?page=" + page;
+                        var clickHandler = function(e) {
+                            e.preventDefault ? e.preventDefault() : (e.returnValue = false);
+                            window.location.href = "?page=" + page;
+                        };
+                        if (a.addEventListener) {
+                            a.addEventListener("click", clickHandler);
+                        } else if (a.attachEvent) {
+                            a.attachEvent("onclick", clickHandler);
+                        }
+                    }
+                    return a;
+                }
+
+                var prevPage = currentPage - 1;
+                container.appendChild(createLink("‹", prevPage, false, prevPage < 1));
+
+                var startPage = Math.max(1, currentPage - 2);
+                var endPage = Math.min(totalPages, currentPage + 2);
+                if (startPage > 1) {
+                    container.appendChild(createLink("1", 1, false, false));
+                    if (startPage > 2) {
+                        var ellipsis = document.createElement("span");
+                        ellipsis.textContent = "...";
+                        ellipsis.style.padding = "0 6px";
+                        container.appendChild(ellipsis);
+                    }
+                }
+                for (var p = startPage; p <= endPage; p++) {
+                    container.appendChild(createLink(String(p), p, p === currentPage, false));
+                }
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        var ellipsis2 = document.createElement("span");
+                        ellipsis2.textContent = "...";
+                        ellipsis2.style.padding = "0 6px";
+                        container.appendChild(ellipsis2);
+                    }
+                    container.appendChild(createLink(String(totalPages), totalPages, false, false));
+                }
+
+                var nextPage = currentPage + 1;
+                container.appendChild(createLink("›", nextPage, false, nextPage > totalPages));
+
+                var info = document.createElement("span");
+                info.className = "page-info";
+                info.textContent = currentPage + " / " + totalPages;
+                container.appendChild(info);
+            }
+
+            // ----- 主加载函数 -----
+            function loadPage() {
+                var pageParam = parseInt(getQueryParam("page"), 10) || 1;
+                if (pageParam < 1) pageParam = 1;
+
+                store.getAllPages(function(pageObj) {
+                    var files = pageObj.files;
+                    if (!files || files.length === 0) {
+                        document.getElementById("item-list").innerHTML =
+                            '<div class="empty-state"><span class="icon-symbol">—</span><p>' +
+                            locale.getStringResource("STORE_NOITEMS") + '</p></div>';
+                        renderPagination(1, 1);
+                        return;
+                    }
+                    var totalPages = files.length;
+                    var pageIndex = Math.min(Math.max(pageParam - 1, 0), totalPages - 1);
+                    var currentPage = pageIndex + 1;
+
+                    store.getPageList(pageObj, pageIndex, function(listData) {
+                        var items = listData.list || [];
+                        renderItems(items);
+                        renderPagination(currentPage, totalPages);
+                        var titleTemplate = locale.getStringResource("STORE_NAME") || "Sidebar Gadget Web Store";
+                        document.title = titleTemplate + " - Page " + currentPage;
+                    }, function() {
+                        document.getElementById("item-list").innerHTML =
+                            '<div class="empty-state"><span class="icon-symbol">!</span><p>' +
+                            locale.getStringResource("STORE_GETFAILED") + '</p></div>';
+                        renderPagination(1, 1);
+                    });
+                }, function() {
+                    document.getElementById("item-list").innerHTML =
+                        '<div class="empty-state"><span class="icon-symbol">!</span><p>' +
+                        locale.getStringResource("STORE_GETFAILED") + '</p></div>';
+                    renderPagination(1, 1);
+                });
+            }
+
+            // ----- DOM 就绪 -----
+            function onReady() {
+                loadPage();
+                locale.processAllResources();
+            }
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                if (!global._storePageLoaded) {
+                    global._storePageLoaded = true;
+                    onReady();
+                }
+            } else {
+                if (window.addEventListener) {
+                    window.addEventListener('load', function() {
+                        if (!global._storePageLoaded) {
+                            global._storePageLoaded = true;
+                            onReady();
+                        }
+                    });
+                } else if (window.attachEvent) {
+                    window.attachEvent('onload', function() {
+                        if (!global._storePageLoaded) {
+                            global._storePageLoaded = true;
+                            onReady();
+                        }
+                    });
+                }
+            }
+        })(this);
+    </script>
+</body>
+
+</html>

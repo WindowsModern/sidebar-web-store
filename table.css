@@ -1,0 +1,144 @@
+     .metro-container {
+         width: 100%;
+         max-width: 960px;
+         background: #ffffff;
+         padding: 30px 25px 35px 25px;
+         box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+         border-bottom: 6px solid #00aba9;
+     }
+     
+     .metro-container h2 {
+         font-size: 22px;
+         font-weight: 300;
+         letter-spacing: 1.5px;
+         color: #1a1a1a;
+         margin-bottom: 20px;
+         padding-bottom: 12px;
+         border-bottom: 2px solid #e0e4ea;
+         position: relative;
+     }
+     
+     .metro-container h2::before {
+         content: '';
+         display: inline-block;
+         width: 8px;
+         height: 24px;
+         background: #00aba9;
+         margin-right: 12px;
+         vertical-align: middle;
+     }
+     
+     .metro-table {
+         width: 100%;
+         border-collapse: collapse;
+         font-size: 15px;
+         color: #2d2d2d;
+     }
+     
+     .metro-table thead {
+         background: #00aba9;
+         color: #ffffff;
+     }
+     
+     .metro-table thead th {
+         padding: 10px;
+         text-align: left;
+         font-weight: 600;
+         font-size: 13px;
+         text-transform: uppercase;
+         letter-spacing: 0.8px;
+         border-right: 1px solid #33c4c2;
+         white-space: nowrap;
+     }
+     
+     .metro-table thead th:last-child {
+         border-right: none;
+     }
+     
+     .metro-table tbody tr {
+         border-left: 5px solid transparent;
+         transition: background 0.15s ease;
+     }
+     
+     .metro-table tbody td {
+         padding: 10px;
+         border-bottom: 1px solid #e8ecf2;
+         vertical-align: middle;
+     }
+     
+     .metro-table tbody tr:nth-child(even) {
+         background-color: #f8f9fb;
+     }
+     
+     .metro-table tbody tr:hover {
+         background: #e5f4f4 !important;
+         border-left-color: #00aba9;
+         cursor: default;
+     }
+     
+     .metro-table tbody td:first-child,
+     .metro-table thead th:first-child {
+         padding-left: 20px;
+     }
+     
+     .metro-label {
+         display: inline-block;
+         padding: 4px 14px;
+         font-size: 12px;
+         font-weight: 600;
+         text-transform: uppercase;
+         letter-spacing: 0.5px;
+         color: #ffffff;
+         background: #888888;
+         border: none;
+         border-radius: 0;
+         line-height: 1.4;
+     }
+     /* Win8 官方磁贴色板 */
+     
+     .metro-label.active {
+         background: #00a651;
+         /* 翠绿磁贴 */
+     }
+     
+     .metro-label.inactive {
+         background: #e51400;
+         /* 警示红磁贴 */
+     }
+     
+     .metro-label.pending {
+         background: #f09609;
+         /* 亮橙磁贴 */
+     }
+     
+     .metro-label.info {
+         background: #1ba1e2;
+         /* 亮蓝磁贴（Win8 应用栏常用） */
+     }
+     
+     .metro-label.important {
+         background: #9b00d3;
+         /* 紫色磁贴（Win8 额外点缀） */
+     }
+     
+     .metro-table .font-mono {
+         font-family: 'Consolas', 'Courier New', monospace;
+         font-size: 14px;
+         color: #1a1a1a;
+     }
+     
+     @media (max-width: 700px) {
+         .metro-container {
+             padding: 20px 15px;
+         }
+         .metro-table {
+             font-size: 14px;
+             display: block;
+             overflow-x: auto;
+             white-space: nowrap;
+         }
+         .metro-table thead th,
+         .metro-table tbody td {
+             padding: 10px 12px;
+         }
+     }

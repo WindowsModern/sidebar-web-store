@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title data-locale-res="STORE_GADGETPAGETITLE">Gadget Detail - Sidebar Gadget Web Store</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleai.css">
+    <script src="storeapi_elder.js"></script>
+    <script src="locale_elder.js"></script>
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Aero 蓝色渐变背景 */
+            background: #b8d4f0;
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#d0e4f7', EndColorStr='#9ac2e0');
+            background: -webkit-gradient(linear, left top, left bottom, from(#d0e4f7), to(#9ac2e0));
+            background: -moz-linear-gradient(top, #d0e4f7, #9ac2e0);
+            background: -ms-linear-gradient(top, #d0e4f7, #9ac2e0);
+            background: linear-gradient(to bottom, #d0e4f7, #9ac2e0);
+            color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Calibri', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* ===== Aero 标题栏 ===== */
+        .store-header {
+            background: rgba(0, 0, 0, 0.35);
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#80000000', EndColorStr='#60000000');
+            padding: 0 40px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .store-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 60px;
+            padding: 0 8px;
+            overflow: hidden;
+        }
+
+        .store-header-title {
+            float: left;
+            line-height: 60px;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .store-header-nav {
+            float: right;
+            line-height: 60px;
+        }
+
+        .store-header-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 6px 16px;
+            transition: background 0.15s, color 0.15s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-left: 6px;
+            display: inline-block;
+        }
+
+        .store-header-nav a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .store-header-nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== 主容器 ===== */
+        .store-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 40px 60px;
+        }
+
+        /* ===== Aero 详情卡片 ===== */
+        .detail-card {
+            background: rgba(255, 255, 255, 0.78);
+            filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#c8ffffff', EndColorStr='#b8ffffff');
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 3px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            padding: 24px 28px 28px;
+            overflow: hidden;
+        }
+
+        /* ===== 头部返回行 ===== */
+        .detail-header-row {
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .metro-backbutton {
+            float: left;
+            background: transparent;
+            border: none;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+            color: #1a1a2e;
+            padding: 0 8px 0 0;
+            transition: color 0.15s;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 300;
+        }
+
+        .metro-backbutton:hover {
+            color: #0078d7;
+        }
+
+        .metro-backbutton::before {
+            content: '\2039';
+            font-size: 36px;
+            font-weight: 300;
+        }
+
+        .detail-title {
+            float: left;
+            font-size: 24px;
+            font-weight: 300;
+            color: #1a1a2e;
+            margin: 0;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 50px);
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+
+        /* ===== Logo & 发布者 ===== */
+        .detail-logo-row {
+            overflow: hidden;
+            margin: 12px 0 10px;
+        }
+
+        .detail-logo {
+            float: left;
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.6);
+            object-fit: contain;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 3px;
+            margin-right: 18px;
+        }
+
+        .detail-publisher {
+            display: block;
+            font-size: 14px;
+            color: #3a4a5e;
+            margin: 0;
+            word-break: break-word;
+            padding-top: 8px;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== 描述 ===== */
+        .detail-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 20px 0 4px 0;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .detail-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2d2d44;
+            margin: 0 0 12px 0;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 12px 16px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        /* ===== 下载区域 ===== */
+        .detail-download-area {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.4);
+            padding: 16px 20px;
+            margin: 4px 0 14px;
+            overflow: hidden;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .detail-download-btn {
+            float: left;
+            background: #0078d7;
+            border: none;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 28px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: 'Segoe UI', sans-serif;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0, 120, 215, 0.3);
+        }
+
+        .detail-download-btn:hover {
+            background: #005a9e;
+            box-shadow: 0 2px 10px rgba(0, 120, 215, 0.4);
+        }
+
+        .detail-download-btn:active {
+            opacity: 0.8;
+        }
+
+        .detail-download-btn:disabled {
+            background: #b0b8c4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .detail-hash {
+            float: left;
+            font-size: 13px;
+            color: #3a4a5e;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            margin: 0 0 0 20px;
+            padding-top: 10px;
+            max-width: calc(100% - 200px);
+        }
+
+        .detail-hash strong {
+            font-weight: 500;
+            color: #1a1a2e;
+        }
+
+        /* ===== 版本表格 (Aero 风格) ===== */
+        .metro-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 3px;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .metro-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: transparent;
+            min-width: 700px;
+            table-layout: fixed;
+        }
+
+        .metro-table thead th {
+            background: rgba(255, 255, 255, 0.3);
+            color: #1a1a2e;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .metro-table .col-version {
+            width: 10%;
+        }
+        .metro-table .col-date {
+            width: 15%;
+        }
+        .metro-table .col-size {
+            width: 10%;
+        }
+        .metro-table .col-os {
+            width: 15%;
+        }
+        .metro-table .col-arch {
+            width: 15%;
+        }
+        .metro-table .col-hash {
+            width: 25%;
+        }
+        .metro-table .col-dl {
+            width: 10%;
+        }
+
+        .metro-table tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #2d2d44;
+            vertical-align: middle;
+            line-height: 1.4;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .metro-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .metro-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .metro-table .hash-cell {
+            word-break: break-all;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .metro-table .download-link {
+            color: #0078d7;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 4px 6px;
+            transition: background 0.15s;
+            display: inline-block;
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-size: 12px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+        }
+
+        .metro-table .download-link:hover {
+            background: rgba(0, 120, 215, 0.1);
+            border-color: #0078d7;
+            text-decoration: none;
+        }
+
+        .metro-table .chip-arch {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 2px 10px;
+            font-size: 12px;
+            color: #1a1a2e;
+            display: inline-block;
+            margin: 1px 2px 1px 0;
+            white-space: nowrap;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 3px;
+        }
+
+        /* ===== IE8 降级（浮动布局已全面使用，无需额外） ===== */
+        /* 为 IE8 清除浮动 */
+        .detail-header-row:after,
+        .detail-logo-row:after,
+        .detail-download-area:after,
+        .detail-card:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .store-header {
+                padding: 0 16px;
+            }
+            .store-header-container {
+                height: 52px;
+            }
+            .store-header-title {
+                font-size: 18px;
+                line-height: 52px;
+            }
+            .store-header-nav {
+                line-height: 52px;
+            }
+            .store-header-nav a {
+                padding: 4px 12px;
+                font-size: 12px;
+            }
+            .store-list {
+                padding: 16px 16px 40px;
+            }
+            .detail-card {
+                padding: 16px 14px 20px;
+            }
+            .detail-title {
+                font-size: 20px;
+            }
+            .detail-download-area {
+                display: block;
+                overflow: hidden;
+            }
+            .detail-download-btn {
+                float: none;
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .detail-hash {
+                float: none;
+                max-width: 100%;
+                margin-left: 0;
+                padding-top: 0;
+            }
+            .metro-table {
+                font-size: 12px;
+                min-width: 600px;
+            }
+            .metro-table thead th,
+            .metro-table tbody td {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .detail-logo {
+                width: 48px;
+                height: 48px;
+            }
+            .detail-title {
+                font-size: 18px;
+            }
+            .metro-table {
+                min-width: 480px;
+                font-size: 11px;
+            }
+            .metro-table .hash-cell {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="store-header">
+        <div class="store-header-container">
+            <h1 class="store-header-title" data-locale-res="STORE_NAME">Sidebar Gadget Web Store</h1>
+            <nav class="store-header-nav">
+                <a href="index_elder.html" data-locale-res="STORE_HOMEPAGE">主页</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="store-list" style="height: calc(100% - 60px); overflow: auto;">
+        <div class="detail-card">
+
+            <!-- 返回 + 标题 -->
+            <div class="detail-header-row">
+                <button id="backpage" class="metro-backbutton" aria-label="Back"></button>
+                <h2 class="detail-title" id="detailTitle">Title</h2>
+            </div>
+
+            <!-- Logo + 发布者 -->
+            <div class="detail-logo-row">
+                <img class="detail-logo" id="detailLogo" src="" alt="Logo">
+                <span class="detail-publisher" id="detailPublisher">Publisher</span>
+            </div>
+
+            <!-- 描述 -->
+            <h3 class="detail-section-title" data-locale-res="STORE_DESC">Description</h3>
+            <p class="detail-description" id="detailDescription">Description</p>
+
+            <!-- 下载 -->
+            <h3 class="detail-section-title" data-locale-res="STORE_DOWNLOAD">Download</h3>
+            <div class="detail-download-area">
+                <button id="download" class="detail-download-btn" data-locale-res="STORE_DOWNLOADNEWEST">Download Newest Version</button>
+                <p class="detail-hash">
+                    <strong data-locale-res="STORE_HASH">Hash (SHA-256): </strong>
+                    <span id="hash" style="word-break: break-all; user-select: text;">--</span>
+                </p>
+            </div>
+
+            <!-- 版本表格 -->
+            <h3 class="detail-section-title" data-locale-res="STORE_VERSIONLIST">All versions</h3>
+            <div class="metro-table-wrap">
+                <table class="metro-table" id="store-versions-table" style="user-select: text;">
+                    <thead>
+                        <tr>
+                            <th class="col-version" data-locale-res="STORE_VERITEM_VERSION">Version</th>
+                            <th class="col-date" data-locale-res="STORE_VERITEM_RELDATE">Release Date</th>
+                            <th class="col-size" data-locale-res="STORE_VERITEM_SIZE">Size</th>
+                            <th class="col-os" data-locale-res="STORE_VERITEM_OS">OS Min</th>
+                            <th class="col-arch" data-locale-res="STORE_VERITEM_CPU">Architecture</th>
+                            <th class="col-hash" data-locale-res="STORE_VERITEM_HASH">Hash (SHA-256)</th>
+                            <th class="col-dl" data-locale-res="STORE_VERITEM_DOWNLOAD">Download</th>
+                        </tr>
+                    </thead>
+                    <tbody id="versionsBody">
+                        <!-- 动态渲染 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(global) {
+            // ----- 跨浏览器事件绑定（兼容 IE8） -----
+            function addEvent(el, eventName, handler) {
+                if (el.addEventListener) {
+                    el.addEventListener(eventName, handler, false);
+                } else if (el.attachEvent) {
+                    el.attachEvent('on' + eventName, handler);
+                } else {
+                    el['on' + eventName] = handler;
+                }
+            }
+
+            var backbutton = document.getElementById("backpage");
+            addEvent(backbutton, "click", function() {
+                global.history.back();
+                return false;
+            });
+
+            // 手动解析 URL 查询参数（兼容 IE8）
+            function getQueryParam(name) {
+                var search = window.location.search;
+                if (search.length === 0) return null;
+                var qs = search.substring(1);
+                var pairs = qs.split('&');
+                for (var i = 0; i < pairs.length; i++) {
+                    var pair = pairs[i].split('=');
+                    var key = decodeURIComponent(pair[0]);
+                    if (key === name) {
+                        return decodeURIComponent(pair[1] || '');
+                    }
+                }
+                return null;
+            }
+
+            // 版本号转数字数组
+            function versionToNumArray(ver) {
+                var parts = ver.split('.');
+                var nums = [];
+                for (var i = 0; i < parts.length; i++) {
+                    nums.push(parseInt(parts[i], 10) || 0);
+                }
+                return nums;
+            }
+
+            function renderDetail() {
+                var id = getQueryParam("familyname");
+                if (!id) {
+                    document.querySelector(".detail-title").innerText = "Invalid Item";
+                    return;
+                }
+
+                store.getItem(id, function(item) {
+                    // 基本信息
+                    var displayName = store.getItemDisplayName(item);
+                    document.querySelector(".detail-title").innerText = displayName;
+                    document.querySelector(".detail-publisher").innerText = store.getItemPublisher(item);
+                    document.querySelector(".detail-description").innerText = store.getItemDescription(item);
+                    document.getElementById("detailLogo").src = store.getItemLogo(item);
+
+                    // 下载按钮与哈希
+                    var downloadButton = document.getElementById("download");
+                    var hashSpan = document.getElementById("hash");
+                    var newestItem = store.getNewestVersionItem(item);
+                    var supportedItem = store.getSupportedNewestVersionItem(item);
+
+                    if (supportedItem && newestItem && supportedItem.version === newestItem.version) {
+                        downloadButton.innerText = locale.getStringResource("STORE_DOWNLOADNEWEST") || "Download Newest";
+                        hashSpan.innerText = newestItem.normalHash || "--";
+                        downloadButton.onclick = function() {
+                            location.href = item.directory + "/" + newestItem.directory + "/" + newestItem.pkgFile;
+                        };
+                    } else if (supportedItem) {
+                        downloadButton.innerText = locale.getStringResource("STORE_DOWNLOADSN") ||
+                            "Download compatible version";
+                        hashSpan.innerText = supportedItem.normalHash || "--";
+                        downloadButton.onclick = function() {
+                            location.href = item.directory + "/" + supportedItem.directory + "/" + supportedItem
+                                .pkgFile;
+                        };
+                    } else {
+                        downloadButton.innerText = locale.getStringResource("STORE_DOWNLOADNEWEST") || "Download Newest";
+                        if (newestItem) {
+                            hashSpan.innerText = newestItem.normalHash || "--";
+                            downloadButton.onclick = function() {
+                                location.href = item.directory + "/" + newestItem.directory + "/" + newestItem
+                                    .pkgFile;
+                            };
+                        } else {
+                            hashSpan.innerText = "--";
+                            downloadButton.disabled = true;
+                            downloadButton.innerText = "No version available";
+                        }
+                    }
+
+                    // 渲染版本表格
+                    var tbody = document.getElementById("versionsBody");
+                    tbody.innerHTML = "";
+                    if (item.items && item.items.length > 0) {
+                        var sorted = item.items.slice().sort(function(a, b) {
+                            var va = versionToNumArray(a.version);
+                            var vb = versionToNumArray(b.version);
+                            var maxLen = va.length > vb.length ? va.length : vb.length;
+                            for (var i = 0; i < maxLen; i++) {
+                                var na = i < va.length ? va[i] : 0;
+                                var nb = i < vb.length ? vb[i] : 0;
+                                if (na !== nb) return nb - na;
+                            }
+                            return 0;
+                        });
+
+                        for (var siIdx = 0; siIdx < sorted.length; siIdx++) {
+                            var si = sorted[siIdx];
+                            var row = document.createElement("tr");
+                            var tdVersion = document.createElement("td");
+                            var tdDate = document.createElement("td");
+                            var tdSize = document.createElement("td");
+                            var tdOs = document.createElement("td");
+                            var tdArch = document.createElement("td");
+                            var tdHash = document.createElement("td");
+                            var tdDl = document.createElement("td");
+
+                            tdVersion.innerText = si.version || "--";
+                            tdDate.innerText = locale.formatLocalDate ? locale.formatLocalDate(si.releaseDate) :
+                                si.releaseDate || "--";
+                            tdSize.innerText = si.size || "--";
+
+                            var osMin = si.supportOs && si.supportOs.osMinVersion ? si.supportOs.osMinVersion : "0.0";
+                            tdOs.innerText = locale.getFriendlySystemName ? locale.getFriendlySystemName("Windows",
+                                osMin) : osMin;
+
+                            var archs = si.supportOs && si.supportOs.processorArchitecture ? si.supportOs
+                                .processorArchitecture : ["Unknown"];
+                            var archHtml = "";
+                            for (var idx = 0; idx < archs.length; idx++) {
+                                archHtml += '<span class="chip-arch">' + archs[idx] + '</span>';
+                            }
+                            tdArch.innerHTML = archHtml;
+
+                            tdHash.className = "hash-cell";
+                            tdHash.innerText = si.normalHash || "--";
+
+                            var dlLink = document.createElement("span");
+                            dlLink.className = "download-link";
+                            dlLink.innerText = locale.getStringResource("STORE_VERITEM_DOWNLOAD") || "Download";
+                            (function(s) {
+                                addEvent(dlLink, "click", function(e) {
+                                    if (e.stopPropagation) e.stopPropagation();
+                                    else e.cancelBubble = true;
+                                    location.href = item.directory + "/" + s.directory + "/" + s.pkgFile;
+                                });
+                            })(si);
+
+                            tdDl.appendChild(dlLink);
+
+                            row.appendChild(tdVersion);
+                            row.appendChild(tdDate);
+                            row.appendChild(tdSize);
+                            row.appendChild(tdOs);
+                            row.appendChild(tdArch);
+                            row.appendChild(tdHash);
+                            row.appendChild(tdDl);
+                            tbody.appendChild(row);
+                        }
+                    } else {
+                        var emptyRow = document.createElement("tr");
+                        var emptyCell = document.createElement("td");
+                        emptyCell.colSpan = 7;
+                        emptyCell.innerText = "No versions available";
+                        emptyCell.style.textAlign = "center";
+                        emptyCell.style.padding = "30px 0";
+                        emptyRow.appendChild(emptyCell);
+                        tbody.appendChild(emptyRow);
+                    }
+
+                    var titleTemplate = locale.getStringResource("STORE_GADGETPAGETITLE") || "{0} - Detail";
+                    document.title = titleTemplate.replace("{0}", displayName);
+
+                }, function(error) {
+                    document.querySelector(".detail-title").innerText = "Load Error";
+                    document.querySelector(".detail-description").innerText = "Failed to load gadget details.";
+                });
+            }
+
+            function onReady() {
+                renderDetail();
+                locale.processAllResources();
+            }
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                if (!global._gadgetPageLoaded) {
+                    global._gadgetPageLoaded = true;
+                    onReady();
+                }
+            } else {
+                addEvent(global, 'load', function() {
+                    if (!global._gadgetPageLoaded) {
+                        global._gadgetPageLoaded = true;
+                        onReady();
+                    }
+                });
+            }
+        })(this);
+    </script>
+</body>
+
+</html>

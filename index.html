@@ -2,29 +2,79 @@
 <html>
 
 <head>
-    <title>Sidebar Gadget Web Store</title>
+    <title data-locale-res="STORE_NAME">Sidebar Gadget Web Store</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="refresh" content="0; url=/index_ai.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        (function(global) {
-            function fetchAllItems(callback) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "list.json", true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        callback(JSON.parse(xhr.responseText));
-                    }
-                };
-                xhr.send();
-            }
-            global.fetchAllItems = fetchAllItems;
-        })(this);
-    </script>
+    <link rel="stylesheet" href="https://unpkg.com/winjs@3.0.1/css/ui-light.css">
+    <script src="https://unpkg.com/winjs@3.0.1/js/ui.js"></script>
+    <script src="https://unpkg.com/winjs@3.0.1/js/base.js"></script>
+    <script src="storeapi.js"></script>
+    <script src="locale.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <header class="win-ui-dark store-header">
+        <div class="store-header-container">
+            <h1 class="store-header-title" id="store-title" data-locale-res="STORE_NAME">Sidebar Gadget Web Store</h1>
+        </div>
+    </header>
+    <div id="itemtemplate" style="display: none;">
+        <div class="store-item">
+            <div>
+                <img class="logo" src="" alt="Gadget Logo">
+            </div>
+            <div style="margin: 0 0 0 10px;">
+                <h3 class="displayname"></h3>
+                <span class="publisher"></span>
+                <span class="version"></span>
+            </div>
+        </div>
+    </div>
+    <div id="list-container" class="store-list">
+        <div id="item-list" class="store-list-container">
 
+        </div>
+    </div>
+    <script>
+        (function(global) {
+            function getTemplate() {
+                return document.getElementById("itemtemplate").cloneNode(true);
+            }
+
+            function itemToNode(item) {
+                var node = getTemplate();
+                node.style.display = "";
+                node.querySelector(".logo").src = store.getItemLogo(item);
+                node.querySelector(".displayname").textContent = store.getItemDisplayName(item);
+                node.querySelector(".publisher").textContent = store.getItemPublisher(item);
+                node.querySelector(".version").textContent = store.getSupportedNewestVersionItem(item).version;
+                node.addEventListener("click", function() {
+                    window.navigation.navigate("gadget.html?familyname=" + item.directory)
+                });
+                return node;
+            }
+
+            function refreshItems() {
+                store.getAllItems(function(items) {
+                    var itemListNode = document.getElementById("item-list");
+                    itemListNode.innerHTML = "";
+                    items.list.forEach(function(item) {
+                        var node = itemToNode(item);
+                        itemListNode.appendChild(node);
+                    });
+                }, function() {
+
+                })
+            }
+            window.onload = function() {
+                refreshItems();
+            };
+            locale.processAllResources();
+        })(this);
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sidebar Gadget Web Store</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/winjs@3.0.1/css/ui-light.css">
+    <script src="https://unpkg.com/winjs@3.0.1/js/ui.js"></script>
+    <script src="https://unpkg.com/winjs@3.0.1/js/base.js"></script>
+    <script src="storeapi.js"></script>
+    <script src="locale.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="table.css">
+</head>
+
+<body>
+    <header class="win-ui-dark store-header">
+        <div class="store-header-container">
+            <h1 class="store-header-title" id="store-title" data-locale-res="STORE_NAME">Sidebar Gadget Web Store</h1>
+            <ul>
+                <li>
+                    <a href="index.html">
+                        <span data-locale-res="STORE_HOMEPAGE">主页</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div class="store-list" style="padding: 30px 120px;">
+        <div class="store-list-container detail-column" style="padding: 0; width: 100%">
+            <div class="flex-r-t-l-c" style="width: 100%; max-width: 100%;">
+                <button id="backpage" class="win-backbutton"></button>
+                <h2 class="store-title" style="margin-left: 10px;">Title</h2>
+            </div>
+            <img class="store-logo" width="60" height="60" style="margin: 10px 0;">
+            <p class="store-publisher">Publisher</p>
+
+            <h3 style="margin: 10px 0 5px" data-locale-res="STORE_DESC">Description</h3>
+            <p class="store-description" style="margin: 0 0 10px;">Description</p>
+
+            <h3 style="margin: 10px 0 5px" data-locale-res="STORE_DOWNLOAD">Download</h3>
+            <div style="margin: 0 0 10px; width: 100%; max-width: 100%;">
+                <button id="download" class="win-button" data-locale-res="STORE_DOWNLOADNEWEST">Download Newest Version</button>
+                <p><span data-locale-res="STORE_HASH">Hash (SHA256): </span><span id="hash" style="word-break: break-all;"></span></p>
+            </div>
+            <div style="width: 100%; max-height: 100%; overflow-x: auto; overflow-y: auto;">
+                <h3 style="margin: 10px 0 5px" data-locale-res="STORE_VERSIONLIST">All versions</h3>
+                <table class="metro-table" id="store-versions-table" style="font-size: 9pt; word-break: break-all;">
+                    <thead>
+                        <tr>
+                            <th data-locale-res="STORE_VERITEM_VERSION">Version</th>
+                            <th data-locale-res="STORE_VERITEM_RELDATE">Release Date</th>
+                            <th data-locale-res="STORE_VERITEM_SIZE">Size</th>
+                            <th data-locale-res="STORE_VERITEM_OS">OS Min Version</th>
+                            <th data-locale-res="STORE_VERITEM_CPU">Supported Architecture</th>
+                            <th data-locale-res="STORE_VERITEM_HASH">Hash (SHA256)</th>
+                            <th data-locale-res="STORE_VERITEM_DOWNLOAD">Download</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function(global) {
+            var backbutton = document.getElementById("backpage");
+            backbutton.addEventListener("click", function() {
+                global.history.back();
+                return false;
+            });
+
+            function refreshPage() {
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get("familyname");
+                if (id) {
+                    store.getItem(id, function(item) {
+                        document.querySelector(".store-title").innerText = store.getItemDisplayName(item);
+                        document.querySelector(".store-publisher").innerText = store.getItemPublisher(item);
+                        document.querySelector(".store-description").innerText = store.getItemDescription(item);
+                        document.querySelector(".store-logo").src = store.getItemLogo(item);
+                        var versions = item.versions;
+                        var table = document.getElementById("store-versions-table");
+                        var tbody = table.querySelector("tbody");
+                        tbody.innerHTML = "";
+                        var downloadButton = document.getElementById("download");
+                        var hash = document.getElementById("hash");
+                        var newestItem = store.getNewestVersionItem(item);
+                        var supportedNewestItem = store.getSupportedNewestVersionItem(item);
+                        if (newestItem == supportedNewestItem || supportedNewestItem == null) {
+                            downloadButton.innerText = locale.getStringResource("STORE_DOWNLOADNEWEST");
+                            hash.innerText = newestItem.normalHash;
+                            downloadButton.onclick = function() {
+                                location.href = item.directory + "/" + newestItem.directory + "/" + newestItem.pkgFile;
+                            }
+                        } else {
+                            downloadButton.innerText = locale.getStringResource("STORE_DOWNLOADSN");
+                            hash.innerText = supportedNewestItem.normalHash;
+                            downloadButton.onclick = function() {
+                                location.href = item.directory + "/" + supportedNewestItem.directory + "/" + supportedNewestItem.pkgFile;
+                            }
+                        }
+                        item.items.forEach(function(si, index) {
+                            var row = document.createElement("tr");
+                            var version = document.createElement("td");
+                            var releaseDate = document.createElement("td");
+                            var size = document.createElement("td");
+                            var osMinVersion = document.createElement("td");
+                            var supportedArchitecture = document.createElement("td");
+                            var hash = document.createElement("td");
+                            var download = document.createElement("td");
+                            version.innerText = si.version;
+                            releaseDate.innerText = locale.formatLocalDate(si.releaseDate);
+                            size.innerText = si.size;
+                            osMinVersion.innerText = locale.getFriendlySystemName("Windows", si.supportOs.osMinVersion);
+                            supportedArchitecture.innerText = si.supportOs.processorArchitecture.join(", ");
+                            hash.innerText = si.normalHash;
+                            download.innerText = locale.getStringResource("STORE_VERITEM_DOWNLOAD");
+                            download.onclick = function() {
+                                location.href = item.directory + "/" + si.directory + "/" + si.pkgFile;
+                            }
+                            row.appendChild(version);
+                            row.appendChild(releaseDate);
+                            row.appendChild(size);
+                            row.appendChild(osMinVersion);
+                            row.appendChild(supportedArchitecture);
+                            row.appendChild(hash);
+                            row.appendChild(download);
+                            tbody.appendChild(row);
+                        });
+                        document.title = locale.getStringResource("STORE_GADGETPAGETITLE").replace("{0}", store.getItemDisplayName(item));
+                    }, function(error) {
+
+                    });
+                }
+            }
+            window.onload = function() {
+                refreshPage();
+            };
+            locale.processAllResources();
+        })(this);
+    </script>
+</body>
+
+</html>

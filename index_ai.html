@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title data-locale-res="STORE_NAME">Sidebar Gadget Web Store</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleai.css">
+    <script src="storeapi.js"></script>
+    <script src="locale.js"></script>
+    <style>
+        /* ===== 全局重置 ===== */
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: #f0f2f5;
+            color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* ===== 深色标题栏 (Metro) ===== */
+        
+        .store-header {
+            background: #000000;
+            /* 纯黑，Metro 经典 */
+            padding: 0 40px;
+            border-bottom: 4px solid #0078d7;
+            /* 强调色粗边框 */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .store-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            padding: 0 8px;
+        }
+        
+        .store-header-title {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        
+        .store-header-nav a {
+            color: rgba(255, 255, 255, 0.70);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 6px 14px;
+            transition: background 0.15s, color 0.15s;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        
+        .store-header-nav a:hover {
+            background: rgba(255, 255, 255, 0.10);
+            color: #ffffff;
+        }
+        
+        .store-header-nav a.active {
+            color: #ffffff;
+            background: rgba(0, 120, 215, 0.40);
+        }
+        /* ===== 主容器 ===== */
+        
+        .store-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 40px 60px;
+        }
+        /* ===== 网格卡片 (Metro 平铺) ===== */
+        
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 4px;
+        }
+        
+        .store-item-card {
+            background: #ffffff;
+            border: 2px solid #d1d5db;
+            /* 硬边框，无阴影 */
+            padding: 16px 14px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 130px;
+            border-radius: 0;
+            /* 直角 */
+            box-shadow: none;
+            /* 无阴影 */
+        }
+        
+        .store-item-card:hover {
+            border-color: #0078d7;
+            background: #f8f9fc;
+        }
+        
+        .store-item-card .card-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 12px;
+            overflow: hidden;
+        }
+        
+        .store-item-card .card-logo {
+            width: 48px;
+            height: 48px;
+            background: #f0f2f5;
+            object-fit: contain;
+            border: 1px solid #d1d5db;
+            flex-shrink: 0;
+            border-radius: 0;
+        }
+        
+        .store-item-card .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .store-item-card .card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 2px 0;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .store-item-card .card-publisher {
+            font-size: 12px;
+            color: #6b7280;
+            display: block;
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .store-item-card .card-version {
+            font-size: 11px;
+            color: #0078d7;
+            background: transparent;
+            padding: 2px 0;
+            margin-top: 8px;
+            display: inline-block;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            border-top: 1px solid #e6e9ef;
+            padding-top: 6px;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        
+        .store-item-card .card-arrow {
+            color: #b0b8c4;
+            font-size: 20px;
+            margin-left: auto;
+            flex-shrink: 0;
+            opacity: 0.5;
+            transition: opacity 0.15s, color 0.15s;
+            line-height: 1;
+        }
+        
+        .store-item-card:hover .card-arrow {
+            opacity: 1;
+            color: #0078d7;
+        }
+        /* ===== 空状态 ===== */
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            font-size: 15px;
+            grid-column: 1 / -1;
+            border: 2px dashed #d1d5db;
+            background: #fafbfc;
+        }
+        
+        .empty-state .icon-symbol {
+            font-size: 38px;
+            margin-bottom: 10px;
+            opacity: 0.35;
+            display: block;
+            font-weight: 300;
+        }
+        /* ===== 响应式 ===== */
+        
+        @media (max-width: 768px) {
+            .store-header {
+                padding: 0 16px;
+            }
+            .store-header-container {
+                height: 52px;
+            }
+            .store-header-title {
+                font-size: 16px;
+            }
+            .store-list {
+                padding: 16px 16px 40px;
+            }
+            .store-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .store-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .store-item-card {
+                padding: 12px 10px;
+                min-height: 110px;
+            }
+            .store-item-card .card-logo {
+                width: 38px;
+                height: 38px;
+            }
+            .store-item-card .card-name {
+                font-size: 13px;
+            }
+            .store-item-card .card-publisher {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="store-header">
+        <div class="store-header-container">
+            <h1 class="store-header-title" data-locale-res="STORE_NAME">Sidebar Gadget Web Store</h1>
+            <nav class="store-header-nav">
+                <a href="index_ai.html" class="active" data-locale-res="STORE_HOMEPAGE">主页</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="store-list" style="height: calc(100% - 60px); overflow: auto;">
+        <div id="item-list" class="store-grid">
+            <!-- 由 JavaScript 动态渲染 -->
+        </div>
+    </div>
+
+    <!-- 卡片模板 -->
+    <div id="itemtemplate" style="display: none;">
+        <div class="store-item-card">
+            <div class="card-row">
+                <img class="card-logo" src="" alt="Logo">
+                <div class="card-info">
+                    <div class="card-name"></div>
+                    <span class="card-publisher"></span>
+                </div>
+                <span class="card-arrow">›</span>
+            </div>
+            <span class="card-version"></span>
+        </div>
+    </div>
+
+    <script>
+        (function(global) {
+            function getTemplate() {
+                return document.getElementById("itemtemplate").cloneNode(true);
+            }
+
+            function itemToNode(item) {
+                var node = getTemplate();
+                node.style.display = "";
+                var logo = node.querySelector(".card-logo");
+                var name = node.querySelector(".card-name");
+                var publisher = node.querySelector(".card-publisher");
+                var version = node.querySelector(".card-version");
+                var arrow = node.querySelector(".card-arrow");
+
+                logo.src = store.getItemLogo(item);
+                logo.alt = store.getItemDisplayName(item);
+                name.textContent = store.getItemDisplayName(item);
+                publisher.textContent = store.getItemPublisher(item);
+
+                var verItem = store.getSupportedNewestVersionItem(item);
+                version.textContent = verItem ? "v" + verItem.version : "--";
+
+                node.addEventListener("click", function() {
+                    try {
+                        global.window.navigation.navigate("detail_ai.html?familyname=" + item.directory);
+                    } catch (e) {
+                        global.location.href = "detail_ai.html?familyname=" + item.directory;
+                    }
+                });
+                node.setAttribute("role", "button");
+                node.setAttribute("tabindex", "0");
+                node.addEventListener("keydown", function(e) {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        try {
+                            global.window.navigation.navigate("detail_ai.html?familyname=" + item.directory);
+                        } catch (e) {
+                            global.location.href = "detail_ai.html?familyname=" + item.directory;
+                        }
+                    }
+                });
+                return node;
+            }
+
+            function refreshItems() {
+                var container = document.getElementById("item-list");
+                container.innerHTML = "";
+                store.getAllItems(function(items) {
+                    if (!items || !items.list || items.list.length === 0) {
+                        container.innerHTML =
+                            '<div class="empty-state"><span class="icon-symbol">—</span><p>' + locale.getStringResource("STORE_NOITEMS") + '</p></div>';
+                        return;
+                    }
+                    var sorted = items.list.slice().sort(function(a, b) {
+                        var nameA = store.getItemDisplayName(a) || '';
+                        var nameB = store.getItemDisplayName(b) || '';
+                        // 使用简单比较，IE11 的 localeCompare 第二个参数可能不支持，直接传 undefined
+                        return nameA.localeCompare(nameB, undefined);
+                    });
+                    // 使用传统 for 循环替代 forEach
+                    for (var i = 0; i < sorted.length; i++) {
+                        container.appendChild(itemToNode(sorted[i]));
+                    }
+                }, function() {
+                    container.innerHTML =
+                        '<div class="empty-state"><span class="icon-symbol">!</span><p>' + locale.getStringResource("STORE_GETFAILED") + '</p></div>';
+                });
+            }
+
+            global.window.onload = function() {
+                refreshItems();
+                locale.processAllResources();
+            };
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                if (!global._storePageLoaded) {
+                    global._storePageLoaded = true;
+                    refreshItems();
+                    locale.processAllResources();
+                }
+            }
+        })(this);
+    </script>
+</body>
+
+</html>
