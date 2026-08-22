@@ -176,7 +176,7 @@
         if (supportedItems.length > 0) {
             // 使用传统函数替换箭头函数
             supportedItems.sort(function(a, b) {
-                return compareVersion(a.version, b.version);
+                return -compareVersion(a.version, b.version);
             });
             return supportedItems[0];
         }

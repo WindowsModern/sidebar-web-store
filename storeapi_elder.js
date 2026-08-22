@@ -182,7 +182,7 @@
         }
         if (supportedItems.length > 0) {
             supportedItems.sort(function(a, b) {
-                return compareVersion(a.version, b.version);
+                return -compareVersion(a.version, b.version);
             });
             return supportedItems[0];
         }
